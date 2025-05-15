@@ -1,0 +1,13 @@
+[package]
+name = "sha256_expander_benchmark"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+expander_compiler = { git = "https://github.com/PolyhedraZK/ExpanderCompilerCollection" }
+gf2 = { git = "https://github.com/PolyhedraZK/Expander", branch = "main" }
+arith = { git = "https://github.com/PolyhedraZK/Expander", branch = "main" }
+circuit-std-rs = { git = "https://github.com/PolyhedraZK/ExpanderCompilerCollection" }
+serdes = { git = "https://github.com/PolyhedraZK/Expander", branch = "main"}
+rand = "0.9.1"
+sha2 = "0.10.8"
