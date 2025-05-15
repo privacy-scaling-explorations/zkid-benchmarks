@@ -1,0 +1,11 @@
+# Ignore build/ directory entirely
+build/
+
+# Ignore the .venv/ directory entirely
+.venv/
+
+# Ignore the stw-cairo directory entirely
+stwo-cairo/
+
+# Ignore any txt file
+*.txt
