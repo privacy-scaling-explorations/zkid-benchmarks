@@ -1,0 +1,46 @@
+Original code: https://github.com/babybear-labs/benchmark
+
+## Requirements
+
+- [Rust](https://rustup.rs/)
+- [SP1](https://docs.succinct.xyz/getting-started/install.html)
+
+## RAM Usage Measurement for SHA256
+
+1. Build the project (generates the sha binary in ../target/release):
+
+```
+cd script
+cargo build --release
+```
+
+2. Run a "no-measure" setup to generate the proving key (pk.bin), verifying key (vk.bin), and proof (proof.bin):
+
+```
+cd script
+# Generate and write pk.bin and vk.bin:
+cargo run --release -- --setup
+# Generate and write proof:
+cargo run --release -- --prove
+```
+
+3. Use the monitor script to measure RAM usage:
+
+```
+cd script
+sh monitor.sh setup-no-write
+```
+
+and
+
+```
+cd script
+sh monitor.sh prove-no-write
+```
+
+## Benchmarking
+
+```
+cd script
+cargo bench
+```
