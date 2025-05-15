@@ -8,7 +8,6 @@ edition = "2021"
 [dependencies]
 plonky2 = { git = "https://github.com/alxkzmn/plonky2.git" }
 anyhow = "1.0.40"
-keccak-hash = "0.10.0"
 itertools = "0.10.0"
 log = "0.4.14"
 sha2 = "0.10"
