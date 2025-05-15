@@ -8,8 +8,7 @@ STWO_DIR="stwo-cairo"
 PROVER_DIR="$STWO_DIR/stwo_cairo_prover"
 
 SHA256_BENCHMARK_FILE="src/main.cairo"
-# INPUT_FILE="src/input0.json" # "hello world" string
-INPUT_FILE="src/input1.json" # random string of 2048 bytes(2KB)
+INPUT_FILE="src/input.json" # random string of 2048 bytes(2KB)
 
 BUILD_DIR="build"
 COMPILED_FILE="build/main_compiled.json"
