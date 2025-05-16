@@ -12,6 +12,10 @@ In many conventional digital identity systems, a credential issuer signs a SHA25
 | Fast proving                                        | Mobile device limitations                                  |
 | Post-quantum security                               | Future-proofing                                            |
 
-## Running the benchmarks
+## Benchmarks
+
+The SHA256 benchmarks that use ZKVMs have minimal circuits that only hash the hardcoded input. We kept the circuits as simple as possible to minimize the ZKVM overhead, so the benchmarks better reflect the proving system performance on SHA256.
+
+### Running the benchmarks
 
 Please refer to the individual README files in each subfolder for instructions on how to run the benchmarks.
