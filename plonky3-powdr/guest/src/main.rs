@@ -9,10 +9,6 @@ fn sha2(input: &[u8]) -> [u8; 32] {
 }
 
 fn main() {
-    // Any serde-deserializable type can be read from a channel.
-    //let msg: Vec<u8> = read(1);
     let msg = &[5u8; 2048];
     let _ = sha2(msg);
-
-    //commit::commit(res);
 }
