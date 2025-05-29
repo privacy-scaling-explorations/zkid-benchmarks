@@ -1,4 +1,6 @@
-Original code: https://github.com/babybear-labs/benchmark
+# Plonky3 SP1 SHA256 Benchmark
+
+This code is based on https://github.com/babybear-labs/benchmark/tree/main/sp1/algos/sha256.
 
 ## Requirements
 
