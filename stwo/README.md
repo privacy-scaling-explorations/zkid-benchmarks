@@ -1,9 +1,9 @@
 # STWO(cairo-lang) SHA256 benchmark
 
 The benchmark codes are based on: 
-https://github.com/cartridge-gg/cairo-sha256/blob/main/src/sha256.cairo 
-https://github.com/cartridge-gg/cairo-sha256/blob/main/src/packed_sha256.cairo 
-https://github.com/cartridge-gg/cairo-sha256/blob/main/tests/test_sha256.cairo 
+- https://github.com/cartridge-gg/cairo-sha256/blob/main/src/sha256.cairo 
+- https://github.com/cartridge-gg/cairo-sha256/blob/main/src/packed_sha256.cairo 
+- https://github.com/cartridge-gg/cairo-sha256/blob/main/tests/test_sha256.cairo 
 
 ## How to run
 1. Install the [`uv`](https://github.com/astral-sh/uv) tool
