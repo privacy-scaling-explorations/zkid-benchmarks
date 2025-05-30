@@ -1,5 +1,8 @@
 # Polyhedra Expander SHA256 benchmark
 
+The benchmark code is from Expander example: 
+- https://github.com/PolyhedraZK/ExpanderCompilerCollection/blob/master/circuit-std-rs/tests/sha256_gf2.rs
+
 ## How to run
 1. Enter the dir
 ```
