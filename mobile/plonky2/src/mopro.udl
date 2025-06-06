@@ -1,0 +1,30 @@
+namespace mopro {
+  [Throws=MoproError]
+  GenerateProofResult generate_fibonacci_proof(string prover_data_path, record<string, sequence<string>> inputs);
+
+  [Throws=MoproError]
+  GenerateProofResult generate_sha256_proof();
+
+  [Throws=MoproError]
+  boolean verify_fibonacci_proof(string verifier_data_path, bytes proof, bytes inputs);
+
+  [Throws=MoproError]
+  boolean verify_sha256_proof(string verifier_data_path, bytes proof, bytes inputs);
+
+  [Throws=MoproError]
+  sequence<string> sha256_roundtrip_bench();
+
+  bytes serialize_inputs(sequence<string> inputs);
+
+  sequence<string> deserialize_inputs(bytes inputs);
+};
+
+dictionary GenerateProofResult {
+  bytes proof;
+  bytes inputs;
+};
+
+[Error]
+enum MoproError {
+  "Plonky2Error"
+};
