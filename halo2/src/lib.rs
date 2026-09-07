@@ -10,8 +10,11 @@ pub const HALO2_BENCH_PROPERTIES: BenchProperties = BenchProperties {
     iop: Cow::Borrowed("Plonkish"),
     pcs: Some(Cow::Borrowed("KZG")), // SHPLONK multi-open over BN254
     arithm: Cow::Borrowed("Plonkish"),
-    //is_zk: flase for now. Can be proven later
-    is_zk: false,
+    // `create_proof` uses `OsRng`; Halo2 randomizes reserved advice rows and its
+    // vanishing argument:
+    // https://github.com/axiom-crypto/halo2/blob/v0.5.3/halo2_proofs/src/plonk/witness.rs#L445-L450
+    // https://github.com/axiom-crypto/halo2/blob/v0.5.3/halo2_proofs/src/plonk/vanishing/prover.rs#L48-L60
+    is_zk: true,
     is_zkvm: false,
     security_bits: 100, // BN254 pairing security after exTNFS estimates, see https://eips.ethereum.org/assets/eip-3068/2017-334.pdf
     is_pq: false,

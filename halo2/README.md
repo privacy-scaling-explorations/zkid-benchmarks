@@ -1,10 +1,8 @@
 # Halo2 SHA256 + Keccak benchmarks
 
-The circuits are Axiom's `zkevm-hashes` crate: https://github.com/axiom-crypto/halo2-lib/tree/develop/hashes/zkevm
-(Axiom's revision of the PSE zkEVM hash circuits).
+The circuits come from Axiom's [`zkevm-hashes`](https://github.com/axiom-crypto/halo2-lib/tree/develop/hashes/zkevm) crate, Axiom's revision of the PSE zkEVM hash circuits.
 
-Proved with halo2's KZG backend over BN254 — SHPLONK multi-open, Blake2b for Fiat-Shamir —
-which is the configuration the upstream tests use.
+Proofs use Halo2's KZG backend over BN254 with SHPLONK multi-open and Blake2b for Fiat-Shamir, matching the upstream tests.
 
 > [!NOTE]
 > The git dependencies must stay on `branch = "develop"` and must not be pinned to a `rev`.
@@ -26,6 +24,8 @@ rustup override set nightly-2026-03-04
 ## Benchmarking
 
 ```bash
+cd halo2
+
 # Quick test with reduced inputs
 BENCH_INPUT_PROFILE=reduced cargo bench -p halo2_circuits
 
@@ -36,40 +36,30 @@ BENCH_INPUT_PROFILE=reduced cargo bench -p halo2_circuits --bench sha256
 cargo run --release --bin sha256_mem_halo2 -- --input-size 128
 ```
 
-`gen_srs` caches structured reference strings under `params/` (override with `PARAMS_DIR`).
-That directory is generated and gitignored; the first run at a given `k` creates it.
+`gen_srs` deterministically generates and caches structured reference strings under `params/` (override with `PARAMS_DIR`). The directory is generated and gitignored, and the first run at a given `k` creates it. These parameters are intended for benchmarking; production deployments require trusted parameters.
 
 ## Circuit details
 
-`src/circuits.rs` holds `Circuit` impls that pass a message to upstream's `multi_sha256` /
-`multi_keccak`. Upstream defines equivalents but only inside `#[cfg(test)]` modules, so they
-are not importable and are restated here. All constraints live upstream.
+`src/circuits.rs` defines `Circuit` implementations that pass one private message to upstream's `multi_sha256` or `multi_keccak` and constrain the resulting digest to one public instance column containing two 128-bit limbs. The SHA-256 circuit fixes the cumulative message length at each block. The Keccak circuit fixes the initial byte count and constrains the selected output row to be final. Upstream defines equivalent wrappers inside `#[cfg(test)]` modules, so the benchmark supplies its own wrappers while retaining the upstream hash constraints.
 
-Each input gets the smallest circuit degree `k` that fits it, so proving cost tracks the workload rather than a fixed constant.
+Each circuit receives the exact block or permutation capacity required by the requested message, so upstream does not add empty-message hashes to fill the domain. The configured constraint system determines the unusable rows, and each input uses the smallest circuit degree `k` that fits those rows.
 
-The k calcultion is done in `src/bench.rs`, inside `pub fn sha256_dimensions` and `pub fn keecak_dimensions`.
+The `k` calculation is implemented by `sha256_dimensions` and `keccak_dimensions` in `src/bench.rs`.
 
 | bytes | SHA256 `k` | Keccak `k` |
 | ----: | ---------: | ---------: |
-|   128 |         10 |         11 |
-|   256 |         10 |         11 |
+|   128 |          8 |         11 |
+|   256 |          9 |         11 |
 |   512 |         10 |         12 |
 |  1024 |         11 |         13 |
 |  2048 |         12 |         14 |
 
-SHA256 has no lookup tables and a fixed column count (~130), so `k` only sets the domain size.
-Keccak takes `rows_per_round = 28`, matching upstream's `packed_multi_keccak_simple` test case
-`(k: 14, rows_per_round: 28)`; the parameter trades circuit width against height, and for Keccak
-`k` is part of `KeccakConfigParams` and also sizes the lookup tables.
-
+SHA-256 has no lookup tables and a fixed column count of approximately 130, so `k` sets the domain size. Keccak uses `rows_per_round = 28`, matching upstream's `packed_multi_keccak_simple` test case `(k: 14, rows_per_round: 28)`; this parameter trades circuit width against height, and `k` also sizes the lookup tables through `KeccakConfigParams`.
 
 ## Reported metrics
 
-- `num_constraints` — rows the hash occupies, excluding padding up to `2^k`. Halo2's analogue
-  of a gate count: each row is one instance of the circuit's custom gates.
-- `preprocessing_size` — serialized proving key. The KZG SRS is universal rather than
-  circuit-specific, so it is not counted.
+- `num_constraints` — row budget required by the requested hash, excluding Halo2's unusable rows and padding up to `2^k`.
+- `preprocessing_size` — serialized proving key in `RawBytes` format. The universal KZG SRS is not part of the proving key and is not counted.
 - `proof_size` — transcript length in bytes.
 
-`is_zk` is `false` per the repository's conservative policy: proofs are generated with `OsRng`
-and halo2 blinds committed polynomials, but no formal argument covering this exact mode is cited.
+`is_zk` is `true`: [Axiom describes `halo2-axiom` v0.5.3 as a PLONK-based zero-knowledge proving system](https://github.com/axiom-crypto/halo2/blob/v0.5.3/halo2_proofs/Cargo.toml#L15-L20), and the benchmark calls its normal `create_proof` API with `OsRng`. Halo2 [computes enough blinding rows to hide every witness polynomial](https://github.com/axiom-crypto/halo2/blob/v0.5.3/halo2_proofs/src/plonk/circuit.rs#L2305-L2331), [fills those rows with random values](https://github.com/axiom-crypto/halo2/blob/v0.5.3/halo2_proofs/src/plonk/witness.rs#L445-L450), and [randomizes the vanishing argument](https://github.com/axiom-crypto/halo2/blob/v0.5.3/halo2_proofs/src/plonk/vanishing/prover.rs#L48-L60).
