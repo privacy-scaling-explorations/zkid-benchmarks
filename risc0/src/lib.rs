@@ -19,9 +19,10 @@ pub fn risc0_bench_properties() -> BenchProperties {
         Some("FRI"), // https://dev.risczero.com/proof-system/stark-by-hand
         "AIR",       // https://dev.risczero.com/proof-system/proof-system-sequence-diagram
         false,       // Benchmarked mode uses ProofKind::Compressed -> ProverOpts::succinct().
-        // RISC Zero's security model says they have not written a mathematical
-        // argument proving this mode is zero-knowledge:
-        // https://dev.risczero.com/api/security-model
+        // RISC Zero's ZK advisory lists all versions as affected with no patched version,
+        // and its security model urges caution for critical privacy requirements:
+        // https://github.com/risc0/risc0/security/advisories/GHSA-5xgj-pmjj-gw49
+        // https://dev.risczero.com/api/security-model#zero-knowledge-proving
         true,                          // zkVM
         96, // RISC Zero 3.0 RISC-V prover target; local default segment_po2=20 toy model reproduces about 97 bits.
         true, // STARK is PQ-safe (Groth16 compression is not); https://dev.risczero.com/api/security-model

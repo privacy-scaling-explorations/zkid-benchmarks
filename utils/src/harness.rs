@@ -67,6 +67,7 @@ pub enum ProvingSystem {
     RookieNumbers,
     StarkV,
     Flock,
+    Halo2,
     // Extend as needed
 }
 
@@ -90,6 +91,7 @@ impl ProvingSystem {
             ProvingSystem::RookieNumbers => "rookie-numbers",
             ProvingSystem::StarkV => "stark-v",
             ProvingSystem::Flock => "flock",
+            ProvingSystem::Halo2 => "halo2",
         }
     }
 }
@@ -138,13 +140,14 @@ pub struct BenchProperties {
     pub iop: Cow<'static, str>,
     pub pcs: Option<Cow<'static, str>>,
     pub arithm: Cow<'static, str>,
-    /// True only when the exact proof mode benchmarked in this repository has
-    /// built-in zero-knowledge established by public documentation and a
-    /// public formal security argument for that exact mode.
+    /// Whether the exact proof mode benchmarked in this repository is implemented
+    /// as zero-knowledge across the complete proving and verification flow.
     ///
-    /// This field is intentionally conservative. Set it to `false` both for
-    /// systems known not to be zero-knowledge and for systems whose exact
-    /// benchmarked mode lacks a complete formal argument free of caveats.
+    /// Public documentation or source must cover the exact benchmarked path and
+    /// show that its required blinding or masking is enabled throughout that flow.
+    /// A formal security argument strengthens that evidence but is not required.
+    /// Modes with known leakage or an applicable unresolved upstream privacy caveat
+    /// are `false`.
     pub is_zk: bool,
     /// True if the proving system is a zkVM (executes guest programs rather than fixed circuits); defaults to false when omitted.
     #[serde(default)]
@@ -171,9 +174,9 @@ impl BenchProperties {
     /// * `iop` - The IOP used by the system.
     /// * `pcs` - The PCS used by the system (if applicable).
     /// * `arithm` - The arithmetization used by the system.
-    /// * `is_zk` - Whether the exact proof mode benchmarked here has a
-    ///   complete formal zero-knowledge argument per the repository's
-    ///   conservative `is_zk` policy.
+    /// * `is_zk` - Whether the exact proof mode benchmarked here is implemented
+    ///   as zero-knowledge across the complete proving and verification flow
+    ///   under the repository's `is_zk` policy.
     /// * `is_zkvm` - Whether the system executes guest programs as a zkVM (set to false for circuit-only proof systems).
     /// * `security_bits` - The security (soundness) parameter of the system.
     /// * `is_pq` - Whether the system is post-quantum-sound.

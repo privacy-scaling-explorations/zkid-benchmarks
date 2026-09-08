@@ -177,13 +177,13 @@ The root `./benchmark.sh` will invoke them in a fixed way via `hyperfine` and ou
 
 #### `is_zk` policy
 
-`is_zk` is intentionally conservative.
+`is_zk` reports whether the exact proof mode exercised by the benchmark is implemented as zero-knowledge across the complete proving and verification flow. It records the configured proof mode; audit coverage and formal assurance are separate.
 
-- Set `is_zk` to `true` only when the exact proof mode benchmarked in this repository has built-in zero-knowledge established by public documentation and a public formal security argument for that exact mode.
-- To claim `is_zk: true`, the contributor must provide references to public documentation and a formal security argument that cover the exact benchmarked configuration.
-- If a system has a separate wrapper mode that provides zero-knowledge, but the benchmarked native mode does not do so, set `is_zk` to `false`.
-- Set `is_zk` to `false` if the formal argument for the benchmarked mode is absent, incomplete, or qualified by official caveats.
-- When in doubt, set `is_zk` to `false`. In this repository, `false` covers both "known not zero-knowledge" and "not sufficiently established as zero-knowledge."
+- Set `is_zk` to `true` when public documentation or source for the exact benchmarked path identifies it as zero-knowledge and shows that its required blinding or masking is enabled throughout that flow.
+- Cite evidence that covers the exact benchmarked code path. A formal security argument strengthens the evidence but is not required for this property.
+- Set `is_zk` to `false` when the benchmarked path omits or disables the zero-knowledge mechanism, exposes private inputs or witness-derived information to the verifier, or relies on a separate wrapper or proof mode that is not benchmarked.
+- Set `is_zk` to `false` when the project publishes an unresolved privacy caveat that applies to the benchmarked mode, including pending implementation changes needed for its zero-knowledge claim.
+- When the evidence for the exact benchmarked mode is inconclusive, set `is_zk` to `false`.
 
 ### 5) Add benchmark flags to `bench_flags.json`
 
